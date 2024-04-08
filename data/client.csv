@@ -1,0 +1,9 @@
+email,referral_email
+beemo@beemo.com,
+mainlevel@email.com,
+sublevel@email.com,mainlevel@email.com
+sublevel2@email.com,sublevel@email.com
+user@email.com,sublevel2@email.com
+Sublevel@email.com,mainlevel@email.com
+User@email.com,Sublevel@email.com
+test@stripe.com,beemo@beemo.com

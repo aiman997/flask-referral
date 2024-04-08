@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Referral Viewer</title>
+</head>
+<body>
+    <form method="post">
+        Email: <input type="text" name="email">
+        <input type="submit" value="Show Referrals">
+    </form>
+
+    {% if email %}
+    <h2>Referrals for {{ email }}:</h2>
+    <ul>
+        {% for referral in referrals %}
+        <li>{{ referral }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</body>
+</html>
