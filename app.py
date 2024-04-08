@@ -24,9 +24,29 @@ def build_referral():
         reader = csv.reader(file)
         next(reader)  #skip header row
         for row in reader:
-            if row[1]: #second column containing referrers email
-                referral_map.setdefault(row[1], []).append(row[0])
+            referrer_email = row[1].strip().lower()
+            referral_email = row[0].strip()
+            if referrer_email: #Check if referrer email is not empty
+                referral_map.setdefault(referrer_email, []).append(referral_email)
     return referral_map
+
+def get_all_referrals(email, referral_map, depth=0, seen=None):
+    if seen is None:
+        seen = set()
+    lines = []
+    lower_email = email.lower()
+    # Prevent processing if we've already seen this email
+    if lower_email in seen:
+        return lines
+    seen.add(lower_email)
+
+    referrals = referral_map.get(lower_email, [])
+    for referral in referrals:
+        indent = '>>>> ' * depth if depth > 0 else ''
+        lines.append(f"{indent}{referral}")
+        lines.extend(get_all_referrals(referral, referral_map, depth + 1, seen))
+    return lines
+
   
 @app.route('/', methods = ['GET', 'POST'])
 def index():
@@ -34,11 +54,12 @@ def index():
     referral_map = build_referral()
     app.logger.debug(f'Referral Map: {referral_map}')
     if request.method == 'POST':
-        email = request.form['email']
+        email = request.form['email'].strip().lower()
         app.logger.debug(f'Form submitted with email: {email}')
-        referrals = referral_map.get(email, [])
-        app.logger.debug(f'Referrals found: {referrals}')
-        return render_template('index.html', referrals=referrals, email=email)
+        # referrals = referral_map.get(email, [])
+        all_referrals = get_all_referrals(email, referral_map)
+        app.logger.debug(f'Referrals found: {all_referrals}')
+        return render_template('index.html', referrals=all_referrals, email=email)
     return render_template('index.html', referrals=[], email='')
 
 

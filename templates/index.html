@@ -10,12 +10,15 @@
     </form>
 
     {% if email %}
-    <h2>Referrals for {{ email }}:</h2>
+    Referrals for {{ email }}:
     <ul>
-        {% for referral in referrals %}
-        <li>{{ referral }}</li>
-        {% endfor %}
+    {% for referral in referrals %}
+        <!-- Use the 'safe' filter to render the string as raw HTML -->
+        <li>{{ referral|safe }}</li>
+    {% endfor %}
     </ul>
     {% endif %}
 </body>
 </html>
+
+
